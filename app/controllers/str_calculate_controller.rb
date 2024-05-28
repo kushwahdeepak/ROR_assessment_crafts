@@ -5,23 +5,28 @@ class StrCalculateController < ApplicationController
       begin
         numbers = params[:numbers]
         result = Calculate(numbers)
-        render json: { result: result }
+        render json: { error: result }
       rescue => e
         render json: { error: e.message }, status: :bad_request
       end
     end
 
     def Calculate(numbers)
-        return 0 if numbers.empty?
-    
-        coma_seprate = ","
-        numbers = numbers.gsub("\n", coma_seprate)
-        nums = numbers.split(coma_seprate).map(&:to_i)
-    
-        negatives = nums.select { |n| n < 0 }
-        raise "negative numbers not allowed: #{negatives.join(',')}" unless negatives.empty?
-    
-        nums.sum
-    end
+			return 0 if numbers.empty?
+	
+			coma_seprate = ","
+			if numbers.start_with?("//")
+				parts = numbers.split("\n", 2)
+				coma_seprate = parts[0][2]
+				numbers = parts[1]
+			end
+			numbers = numbers.gsub("\n", coma_seprate)
+			nums = numbers.split(coma_seprate).map(&:to_i)
+	
+			negatives = nums.select { |n| n < 0 }
+			raise "negative numbers not allowed: #{negatives.join(',')}" unless negatives.empty?
+	
+			nums.sum
+	  end
 
 end
