@@ -1,0 +1,2 @@
+class StrCalculateController < ApplicationController
+end
